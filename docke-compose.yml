@@ -1,0 +1,45 @@
+# THIS TO WORK WITH SINGLE CONTAINER
+#version: '3'
+#services:
+#  web:
+#    image: docker-spring:latest7
+#    volumes:
+#      - ~mohamed:/var/lib/project/data
+#
+#    ports:
+#      - 8080:8080
+
+# MORE THAN CONTAINER AND POINTER TO DOCKER FILE
+version: "3"
+services:
+  api_service:
+    build: .
+    restart: always
+    ports:
+      - 8080:8080
+    depends_on:
+      - sqlite3
+#    command: sh -c './wait-for mysql_db:3306 -- npm start'
+
+    networks:
+      - app-network
+
+  sqlite3:
+    image: nouchka/sqlite3:latest
+    stdin_open: true
+    tty: true
+    volumes:
+      - ./db/:/root/db/
+
+    networks:
+      - app-network
+
+
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  mysqlvolume:
+    driver: local
